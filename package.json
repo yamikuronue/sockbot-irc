@@ -1,0 +1,19 @@
+{
+  "name": "sockbot-provider-example",
+  "version": "0.1.0",
+  "description": "An example forum provider for sockbot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SockDrawer/sockbot-provider-example.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SockDrawer/sockbot-provider-example/issues"
+  },
+  "homepage": "https://github.com/SockDrawer/sockbot-provider-example#readme"
+}
