@@ -172,3 +172,33 @@ exports.header5 = function header5(text) {
 exports.header6 = function header6(text) {
     return text;
 };
+
+/**
+* Format text as a preformatted block
+*
+* @param {!string} text The text
+* @returns {string} Text in a preformat block
+*/
+exports.preformat = function preformat (text) {
+    return text;
+};
+  
+/**
+ * Format text with a strikethrough effect
+ *
+ * @param {!string} text The text to strike out
+ * @returns {string} The stricken text
+ */
+exports.strikethrough = function strikethrough (text) {
+    return text;
+};
+
+/**
+ * Format text as a list of items
+ *
+ * @param {!Array} items An array of strings to format as a list
+ * @returns {string} The list
+ */
+exports.list = function list (items) {
+    return items;
+};
