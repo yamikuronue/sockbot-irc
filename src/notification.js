@@ -33,6 +33,12 @@ exports.bindNotification = function bindNotification(forum) {
          * @param {*} payload Payload to construct the Notification object out of
          */
         constructor(payload) {
+            this.data.nick = payload.nick;
+            this.data.to = payload.to;
+            this.data.text = payload.text;
+            this.data.raw = payload.message;
+            this.data.type = payload.type;
+            this.data.ts = new Date();
         }
 
         /**
@@ -43,7 +49,7 @@ exports.bindNotification = function bindNotification(forum) {
          * @type {string}
          */
         get id() {
-throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return 0;
         }
 
         /**
@@ -54,7 +60,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {number}
          */
         get postId() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return 0;
         }
 
         /**
@@ -65,7 +71,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {number}
          */
         get topicId() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return 0;
         }
 
         /**
@@ -76,7 +82,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {number}
          */
         get userId() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.nick;
         }
 
         /**
@@ -87,7 +93,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {notificationType}
          */
         get type() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.type;
         }
 
         /**
@@ -98,7 +104,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {string}
          */
         get subtype() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.type;
         }
 
         /**
@@ -109,7 +115,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {boolean}
          */
         get read() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return false;
         }
 
         /**
@@ -120,7 +126,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {Date}
          */
         get date() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.ts;
         }
 
         /**
@@ -131,7 +137,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {string}
          */
         get label() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return `new message from ${this.data.nick} in ${this.data.to}`;
         }
 
         /**
@@ -142,11 +148,11 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {string}
          */
         get body() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.text;
         }
 
         /**
-         * HTML Markup for this notification body
+         * Raw Markup for this notification body
          *
          * @public
          *
@@ -156,7 +162,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @fulfill the Notification markup
          */
         getText() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return Promise.resolve(this.data.text);
         }
 
         /**
@@ -228,11 +234,11 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @fulfill {Notification} the retrieved notification
          */
         static get(notificationId) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_IMPOSSIBLE');
         }
 
         /**
-         * Parse a notification from a given payload
+         * Parse a notification from a message input
          *
          * @public
          * @static
@@ -240,8 +246,17 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @param {*} payload The notification payload
          * @returns {Notification} the parsed notification
          */
-        static parse(payload) {
-            return new Notification(payload);
+        static receiveMessage(nick, to, text, message) {
+            const notification = new Notification({
+                nick: nick,
+                to: to,
+                text: text,
+                message: message,
+                type: 'message'
+            });
+            
+            forum.emit(`notification:message`, notification);
+            forum.emit('notification', notification);
         }
 
         /**
@@ -274,7 +289,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * Listen for new notifications and process ones that arrive
          */
         static activate() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            forum.client.addListener('message', Notification.receiveMessage);
         }
 
         /**
@@ -283,7 +298,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * Stop listening for new notifcations.
          */
         static deactivate() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            forum.client.removeListener('message', Notification.receiveMessage);
         }
     }
 

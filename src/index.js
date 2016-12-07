@@ -41,17 +41,10 @@ class Forum extends EventEmitter {
         this.Notification = notifications.bindNotification(this);
         this.PrivateMessage = PMModule.bindPM(this);
         this.Format = formatters;
-    }
-
-    /**
-     * Bot instance configuration
-     *
-     * @public
-     *
-     * @type {object}
-     */
-    get config() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        
+        this.config = config;
+        
+        this.IRC = require('irc');
     }
 
     /**
@@ -62,7 +55,7 @@ class Forum extends EventEmitter {
      * @type {string}
      */
     get useragent() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        return 'Sockbot IRC Edition';
     }
 
     /**
@@ -73,7 +66,7 @@ class Forum extends EventEmitter {
      * @type {string}
      */
     get url() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        throw new Error('E_UNSUPPORTED');
     }
 
     /**
@@ -84,7 +77,7 @@ class Forum extends EventEmitter {
      * @type{string}
      */
     get username() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        return this.config.core.username;
     }
 
     /**
@@ -106,7 +99,7 @@ class Forum extends EventEmitter {
      * @type {User}
      */
     get owner() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        return this.config.core.owner;
     }
 
     /**
@@ -117,7 +110,7 @@ class Forum extends EventEmitter {
      * @type {Commands}
      */
     get Commands() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        return this._commands;
     }
 
     /**
@@ -128,7 +121,7 @@ class Forum extends EventEmitter {
      * @param {Commands} commands commands Instance
      */
     set Commands(commands) {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        this._commands = commands;
     }
 
     /**
@@ -140,7 +133,9 @@ class Forum extends EventEmitter {
      * @fulfill {Forum} Logged in forum
      */
     login() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+         //Allow users to set the nickserv nick
+        const nickServ = this.config.core.nickServ || 'NickServ';
+        this.client.say(nickServ, `IDENTIFY ${this.config.core.password}`);
     }
 
     /**
@@ -198,7 +193,24 @@ class Forum extends EventEmitter {
      * @reject {Error} Generated plugin is invalid
      */
     addPlugin(fnPlugin, pluginConfig) {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        return new Promise((resolve, reject) => {
+            let fn = fnPlugin;
+            if (typeof fn !== 'function') {
+                fn = fn.plugin;
+            }
+            const plugin = fn(this, pluginConfig);
+            if (typeof plugin !== 'object') {
+                return reject('[[invalid_plugin:no_plugin_object]]');
+            }
+            if (typeof plugin.activate !== 'function') {
+                return reject('[[invalid_plugin:no_activate_function]]');
+            }
+            if (typeof plugin.deactivate !== 'function') {
+                return reject('[[invalid_plugin:no_deactivate_function]]');
+            }
+            this._plugins.push(plugin);
+            return resolve();
+        });
     }
 
     /**
@@ -207,7 +219,16 @@ class Forum extends EventEmitter {
      * @returns {Promise} Resolves when all plugins have been enabled
      */
     activate() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        this.client = new this.IRC.Client(this.config.core.server, this.username, {
+            channels: this.config.core.channels || [],
+            realName: this.useragent,
+            floodProtection: true,
+            floodProtectionDelay: 500,
+        });
+        
+        return this.Notification.activate().then(() => {
+            return Promise.all(this._plugins.map((plugin) => plugin.activate()));
+        });
     }
 
     /**
@@ -230,7 +251,8 @@ class Forum extends EventEmitter {
             'Posts',
             'Topics',
             'Notifications',
-            'PrivateMessage'
+            'PrivateMessage',
+            'Formatting'
         ];
 
         let support = false;
