@@ -8,7 +8,7 @@ chai.should();
 
 
 const testModule = require('../src/format');
-describe('providers/slack/format', () => {
+describe('providers/example/format', () => {
     describe('exports', () => {
         const fns = ['urlForPost', 'urlForTopic', 'quoteText', 'link', 'image', 'spoiler',
             'italic', 'bold', 'bolditalic', 'header1', 'header2', 'header3', 'header4',
