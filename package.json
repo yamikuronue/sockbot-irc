@@ -15,5 +15,7 @@
   "bugs": {
     "url": "https://github.com/SockDrawer/sockbot-provider-example/issues"
   },
-  "homepage": "https://github.com/SockDrawer/sockbot-provider-example#readme"
+  "homepage": "https://github.com/SockDrawer/sockbot-provider-example#readme",
+  "devDependencies": {
+  }
 }
