@@ -1,2 +1,4 @@
-# sockbot-provider-example
-Example Forum Provider for SockBot
+# sockbot-IRC
+IRC Provider for SockBot
+
+Nowhere near done
