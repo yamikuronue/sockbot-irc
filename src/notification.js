@@ -200,9 +200,7 @@ exports.bindNotification = function bindNotification(forum) {
          * Get the topic this Notification refers to
          *
          * @public
-         *
-         * @returns {Promise<Topic>} Resolves to the topic the notification refers to
-         *
+         *         *
          * @promise
          * @fulfill {Topic} the Topic the notification refers to
          */
@@ -230,13 +228,11 @@ exports.bindNotification = function bindNotification(forum) {
          * @public
          * @static
          *
-         * @param {string} notificationId The id of the notification to get
-         * @returns {Promise<Notification>} resolves to the retrieved notification
          *
          *@promise
          * @fulfill {Notification} the retrieved notification
          */
-        static get(notificationId) {
+        static get() {
             throw new Error('E_IMPOSSIBLE');
         }
 
@@ -246,7 +242,10 @@ exports.bindNotification = function bindNotification(forum) {
          * @public
          * @static
          *
-         * @param {*} payload The notification payload
+         * @param {String} nick The nick of the user who sent the message
+         * @param {String} to The recipient of the message, either a channel or the bot's username
+         * @param {String} text The text of the message
+         * @param {String} message The raw message object
          * @returns {Notification} the parsed notification
          */
         static receiveMessage(nick, to, text, message) {
@@ -260,7 +259,7 @@ exports.bindNotification = function bindNotification(forum) {
             });
             
             debug(`emitting notification: message in ${notification.topicId} was ${nick}:${text}`);
-            forum.emit(`notification:message`, notification);
+            forum.emit('notification:message', notification);
             forum.emit('notification', notification);
             
             if (text.indexOf(forum.username) > -1) {
@@ -277,12 +276,12 @@ exports.bindNotification = function bindNotification(forum) {
                 topic: notification.topicId,
                 user: notification.userId,
                 pm: -1,
-                chat: -1    
+                chat: -1
             };
             
-            debug(`processing commands`);
+            debug('processing commands');
             return forum.Commands.get(IDs,
-                    notification.body, 
+                    notification.body,
                     (content) => forum.Post.reply(notification.topicId, 0, content)
                 )
                 .then((command) => {
@@ -315,7 +314,7 @@ exports.bindNotification = function bindNotification(forum) {
          * @returns {Promise} Fulfills after notifications are processed
          *
          */
-        static getNotifications(eachNotification) {
+        static getNotifications() {
             return Promise.resolve();
         }
 
@@ -323,9 +322,10 @@ exports.bindNotification = function bindNotification(forum) {
          * Activate notifications.
          *
          * Listen for new notifications and process ones that arrive
+         * @returns {Promise} Fulfills after activation is complete
          */
         static activate() {
-            debug(`notifications are active`);
+            debug('notifications are active');
             forum.client.addListener('message', Notification.receiveMessage);
             return Promise.resolve();
         }
@@ -334,6 +334,8 @@ exports.bindNotification = function bindNotification(forum) {
          * Deactivate notifications
          *
          * Stop listening for new notifcations.
+         *
+         * @returns {Promise} Fulfills after notifications are ceased
          */
         static deactivate() {
             forum.client.removeListener('message', Notification.receiveMessage);

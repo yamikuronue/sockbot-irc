@@ -1,6 +1,8 @@
 'use strict';
+/* eslint-disable no-unused-vars */
+
 /**
- * Example provider Formatters module
+ * Formatters module
  * @module sockbot.providers.example.Format
  * @author Accalia
  * @license MIT

@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable */
 /**
  * Example provider module Topic class
  * @module sockbot.providers.example.Topic

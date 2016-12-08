@@ -6,7 +6,7 @@
  * @license MIT
  */
  
- const debug = require('debug')('sockbot:providers:irc:post');
+const debug = require('debug')('sockbot:providers:irc:post');
 
 /**
  * Create a Post class and bind it to a forum instance
@@ -35,11 +35,11 @@ exports.bindPost = function bindPost(forum) {
          * @param {*} payload Payload to construct the Post object out of
          */
         constructor(payload) {
-                this.data = {};
-                this.data.from = payload.from;
-                this.data.text = payload.text;
-                this.data.ts = new Date(payload.ts);
-                this.data.channel = payload.to;
+            this.data = {};
+            this.data.from = payload.from;
+            this.data.text = payload.text;
+            this.data.ts = new Date(payload.ts);
+            this.data.channel = payload.to;
         }
 
         /**
@@ -98,7 +98,7 @@ exports.bindPost = function bindPost(forum) {
          * @type {number}
          */
         get id() {
-           return 0;
+            return 0;
         }
 
         /**
@@ -133,15 +133,13 @@ exports.bindPost = function bindPost(forum) {
          * @public
          *
          * @param {string} content Post content
-         * @returns {Promise<Post>} Resolves to the newly created Post
          *
          * @promise
          * @fulfill {Post} The newly created Post
          * @reject {Error} An Error that occured while posting
          */
         reply(content) {
-            debug(this.data)
-            return Post.reply(this.data.to, 0, content);
+            Post.reply(this.data.to, 0, content);
         }
 
         /**
@@ -153,7 +151,6 @@ exports.bindPost = function bindPost(forum) {
          * @param {string} topicId Topic Id to reply to
          * @param {string} postId Post Id to reply to
          * @param {string} content Post content
-         * @returns {Promise<Post>} Resolves to the newly created Post
          *
          * @promise
          * @fulfill {Post} The newly created Post
@@ -169,16 +166,11 @@ exports.bindPost = function bindPost(forum) {
          *
          * @public
          *
-         * @param {string} newContent New post content
-         * @param {string} [reason] Post edit reason
-         *
-         * @returns {Promise<Post>} Resolves to the edited Post
-         *
          * @promise
          * @fulfill {Post} The edited Post
          * @reject {Error} An Error that occured while editing
          */
-        edit(newContent, reason) {
+        edit() {
             throw new Error('E_UNSUPPORTED');
         }
 
@@ -187,16 +179,12 @@ exports.bindPost = function bindPost(forum) {
          *
          * @public
          *
-         * @param {string} newContent New post content
-         * @param {string} [reason] Post edit reason
-         *
-         * @returns {Promise<Post>} Resolves to the edited post
          *
          * @promise
          * @fulfill {Post} The edited Post
          * @reject {Error} An Error that occured while editing
          */
-        append(newContent, reason) {
+        append() {
             throw new Error('E_UNSUPPORTED');
         }
 
@@ -204,8 +192,6 @@ exports.bindPost = function bindPost(forum) {
          * Delete this post
          *
          * @public
-         *
-         * @returns {Promise<Post>} Resolves to the deleted post
          *
          * @promise
          * @fulfill {Post} The deleted Post
@@ -220,7 +206,6 @@ exports.bindPost = function bindPost(forum) {
          *
          * @public
          *
-         * @returns {Promise<Post>} Resolves to the undeleted post
          *
          * @promise
          * @fulfill {Post} The undeleted Post
@@ -235,7 +220,6 @@ exports.bindPost = function bindPost(forum) {
          *
          * @public
          *
-         * @returns {Promise<Post>} Resolves to the upvoted post
          *
          * @promise
          * @fulfill {Post} The upvoted Post
@@ -250,8 +234,6 @@ exports.bindPost = function bindPost(forum) {
          *
          * @public
          *
-         * @returns {Promise<Post>} Resolves to the downvoted post
-         *
          * @promise
          * @fulfill {Post} The downvoted Post
          * @reject {Error} An Error that occured while downvoting
@@ -265,7 +247,6 @@ exports.bindPost = function bindPost(forum) {
          *
          * @public
          *
-         * @returns {Promise<Post>} Resolves to the unvoted post
          *
          * @promise
          * @fulfill {Post} The unvoted Post
@@ -280,7 +261,6 @@ exports.bindPost = function bindPost(forum) {
          *
          * @public
          *
-         * @returns {Promise<Post>} Resolves to the bookmarked post
          *
          * @promise
          * @fulfill {Post} The bookmarked post
@@ -295,7 +275,6 @@ exports.bindPost = function bindPost(forum) {
          *
          * @public
          *
-         * @returns {Promise<Post>} Resolves to the unbookmarked post
          *
          * @promise
          * @fulfill {Post} The unbookmarked post
@@ -311,14 +290,12 @@ exports.bindPost = function bindPost(forum) {
          * @public
          * @static
          *
-         * @param {*} postId Forum specific post id to retrieve
-         * @returns {Promise<Post>} Resolves to the retrieved post
          *
          * @promise
          * @fulfill {Post} The retrieved Post
          * @reject {Error} An Error that occured retrieving the post
          */
-        static get(postId) {
+        static get() {
             throw new Error('E_UNSUPPORTED');
         }
 
@@ -341,15 +318,13 @@ exports.bindPost = function bindPost(forum) {
          * @public
          * @static
          *
-         * @param {string} content Content to render HTML PReview for
-         * @returns {Promise<String>} Resolves to the rendered HTML
          *
          * @promise
          * @fulfill {string} Rendered HTML for `content`
          * @reject {Error} Any error that occurred rendering HTML for `content`
          *
          */
-        static preview(content) {
+        static preview() {
             throw new Error('E_UNSUPPORTED');
         }
     }

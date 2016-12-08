@@ -39,12 +39,14 @@ class Forum extends EventEmitter {
         this.PrivateMessage = this.Post;
         this.Format = formatters;
         
-        this.config = config;
+        this.config = config || {};
         
         this.IRC = require('irc');
         
         this._plugins = [];
         this.activated = false;
+        
+        this.config.useragent = useragent;
     }
 
     /**
@@ -55,7 +57,7 @@ class Forum extends EventEmitter {
      * @type {string}
      */
     get useragent() {
-        return 'Sockbot IRC Edition';
+        return `Sockbot IRC Edition: ${this.config.useragent}`;
     }
 
     /**
@@ -231,7 +233,7 @@ class Forum extends EventEmitter {
             channels: this.config.core.channels || [],
             realName: this.useragent,
             floodProtection: true,
-            floodProtectionDelay: 500,
+            floodProtectionDelay: 500
         });
         
         this.client.addListener('error', (raw) => {
@@ -239,7 +241,7 @@ class Forum extends EventEmitter {
                 this.emit('log', `Greetings, traveller! We notice you have not registered the bot's nick, '${this.username}'. 
                             Please do so; this prevents the bot from having nick collisions. Thank you.`);
             }
-            debug('ERR: ' + raw.command);
+            debug(`ERR: ${raw.command}`);
         });
         
         this.activated = true;
@@ -258,12 +260,13 @@ class Forum extends EventEmitter {
      */
     deactivate() {
         this.activated = false;
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        return Promise.reject(new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED'));
     }
     
     /**
      * Check if the forum supports a given functionality
      *
+     * @param {String} supportString The functionality to check
      * @returns {Boolean} Whether or not the forum supports a given function
      */
     supports(supportString) {
@@ -279,7 +282,7 @@ class Forum extends EventEmitter {
         let support = false;
         
         if (Array.isArray(supportString)) {
-            support = supportString.reduce((value, item) => { 
+            support = supportString.reduce((value, item) => {
                 return value && this.supports(item);
             }, true);
             return support;

@@ -6,7 +6,7 @@
  * @license MIT
  */
  
- const debug = require('debug')('sockbot:providers:irc:user');
+const debug = require('debug')('sockbot:providers:irc:user');
 
 /**
  * Create a User class and bind it to a forum instance
@@ -173,7 +173,6 @@ exports.bindUser = function bindUser(forum) {
          *
          * @public
          *
-         * @returns {Promise<User>} Resolves on completion to followed User
          *
          * @promise
          * @fulfill {User} The followed User
@@ -188,7 +187,6 @@ exports.bindUser = function bindUser(forum) {
          *
          * @public
          *
-         * @returns {Promise<user>} Resolves to the unfollowed User
          *
          * @promise
          * @fulfill {User} The unfollowed User
@@ -217,7 +215,7 @@ exports.bindUser = function bindUser(forum) {
             if (userId.indexOf('@') > 0) {
                 userId = userId.split('@')[0];
             }
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 forum.client.whois(userId, (info) => {
                     resolve(User.parse(info));
                 });
