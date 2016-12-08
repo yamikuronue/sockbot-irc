@@ -2,9 +2,11 @@
 /**
  * Example provider module User class
  * @module sockbot.providers.example.User
- * @author Accalia
+ * @author yamikuronue
  * @license MIT
  */
+ 
+ const debug = require('debug')('sockbot:providers:irc:user');
 
 /**
  * Create a User class and bind it to a forum instance
@@ -33,7 +35,10 @@ exports.bindUser = function bindUser(forum) {
          * @param {*} payload Payload to construct the User object out of
          */
         constructor(payload) {
-throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            this.data = {};
+            this.data.nick = payload.nick;
+            this.data.host = payload.host;
+            this.data.realname = payload.realname;
         }
 
         /**
@@ -44,7 +49,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {!number}
          */
         get id() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return `${this.data.nick}@${this.data.host}`;
         }
 
         /**
@@ -55,7 +60,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {?string}
          */
         get name() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.realname;
         }
 
         /**
@@ -66,7 +71,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {!string}
          */
         get username() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.nick;
         }
 
         /**
@@ -79,7 +84,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {?string}
          */
         get email() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -90,7 +95,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {!string}
          */
         get avatar() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -101,7 +106,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {!number}
          */
         get postCount() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -112,7 +117,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {!number}
          */
         get topicCount() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -123,7 +128,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {!number}
          */
         get reputation() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -134,7 +139,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {!Date}
          */
         get lastPosted() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -145,7 +150,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @type {!Date}
          */
         get lastSeen() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -175,7 +180,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @reject {Error} An Error that occured while processing
          */
         follow() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -190,7 +195,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          * @reject {Error} An Error that occured while processing
          */
         unfollow() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -208,7 +213,15 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          *
          */
         static get(userId) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            debug(`Attempting to get user ${userId}`);
+            if (userId.indexOf('@') > 0) {
+                userId = userId.split('@')[0];
+            }
+            return new Promise((resolve, reject) => {
+                forum.client.whois(userId, (info) => {
+                    resolve(User.parse(info));
+                });
+            });
         }
 
         /**
@@ -226,7 +239,7 @@ throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
          *
          */
         static getByName(username) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return User.get(username);
         }
 
         /**

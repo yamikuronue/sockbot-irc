@@ -45,7 +45,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @type {!number}
          */
         get authorId() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -56,7 +56,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @type {!string}
          */
         get title() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_NOT_IMPLEMENTED');
         }
 
         /**
@@ -67,7 +67,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @type {!Date}
          */
         get posted() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -78,7 +78,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @type {!Date}
          */
         get lastPosted() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -100,7 +100,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @type {!number}
          */
         get mainPostId() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -111,7 +111,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @type {number}
          */
         get postCount() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -126,7 +126,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @reject {Error} An Error that occured while retrieving the post URL
          */
         url() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -170,7 +170,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @reject {Error} An Error that occured while posting
          */
         getAllPosts(eachPost) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -186,7 +186,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @reject {Error} An Error that occured while posting
          */
         getLatestPosts(eachPost) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -202,7 +202,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @reject {Error} An Error that occured while posting
          */
         markRead(postNumber) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -247,7 +247,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @reject {Error} An Error that occured while posting
          */
         mute() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.unwatch();
         }
 
         /**
@@ -262,7 +262,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @reject {Error} An Error that occured while posting
          */
         unmute() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.watch();
         }
 
         /**
@@ -303,7 +303,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @returns {Promise} A promise that resolves when all topics have been processed
          */
         static getUnreadTopics(eachTopic) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -315,7 +315,7 @@ exports.bindTopic = function bindTopic(forum) {
          * @returns {Promise} A promise that resolves when all topics have been processed
          */
         static getRecentTopics(eachTopic) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
     }
     return Topic;

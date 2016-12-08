@@ -2,9 +2,11 @@
 /**
  * Example provider module User class
  * @module sockbot.providers.example.User
- * @author Accalia
+ * @author yamikuronue
  * @license MIT
  */
+ 
+ const debug = require('debug')('sockbot:providers:irc:post');
 
 /**
  * Create a Post class and bind it to a forum instance
@@ -33,7 +35,11 @@ exports.bindPost = function bindPost(forum) {
          * @param {*} payload Payload to construct the Post object out of
          */
         constructor(payload) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+                this.data = {};
+                this.data.from = payload.from;
+                this.data.text = payload.text;
+                this.data.ts = new Date(payload.ts);
+                this.data.channel = payload.to;
         }
 
         /**
@@ -44,7 +50,7 @@ exports.bindPost = function bindPost(forum) {
          * @type {!number}
          */
         get authorId() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.from;
         }
 
         /**
@@ -55,7 +61,7 @@ exports.bindPost = function bindPost(forum) {
          * @type {string}
          */
         get content() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.text;
         }
 
         /**
@@ -70,7 +76,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while deleting
          */
         markup() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.text;
         }
 
         /**
@@ -81,7 +87,7 @@ exports.bindPost = function bindPost(forum) {
          * @type {Date}
          */
         get posted() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.ts;
         }
 
         /**
@@ -92,7 +98,7 @@ exports.bindPost = function bindPost(forum) {
          * @type {number}
          */
         get id() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+           return 0;
         }
 
         /**
@@ -103,7 +109,7 @@ exports.bindPost = function bindPost(forum) {
          * @type {number}
          */
         get topicId() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return this.data.channel;
         }
 
         /**
@@ -134,7 +140,8 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while posting
          */
         reply(content) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            debug(this.data)
+            return Post.reply(this.data.to, 0, content);
         }
 
         /**
@@ -153,7 +160,8 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while posting
          */
         static reply(topicId, postId, content) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            debug(`replying to ${topicId} with ${content}`);
+            forum.client.say(topicId, content);
         }
 
         /**
@@ -171,7 +179,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while editing
          */
         edit(newContent, reason) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -189,7 +197,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while editing
          */
         append(newContent, reason) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -204,7 +212,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while deleting
          */
         delete() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -219,7 +227,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while deleting
          */
         undelete() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -234,7 +242,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while upvoting
          */
         upvote() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -249,7 +257,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while downvoting
          */
         downvote() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -264,7 +272,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while downvoting
          */
         unvote() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -279,7 +287,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while bookmarking
          */
         bookmark() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -294,7 +302,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured while unbookmarking
          */
         unbookmark() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -311,7 +319,7 @@ exports.bindPost = function bindPost(forum) {
          * @reject {Error} An Error that occured retrieving the post
          */
         static get(postId) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
 
         /**
@@ -342,7 +350,7 @@ exports.bindPost = function bindPost(forum) {
          *
          */
         static preview(content) {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            throw new Error('E_UNSUPPORTED');
         }
     }
     return Post;

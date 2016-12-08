@@ -7,14 +7,12 @@
  */
 
 const EventEmitter = require('events').EventEmitter;
-
+const debug = require('debug')('sockbot:providers:irc');
 
 const postModule = require('./post'),
     topicModule = require('./topic'),
-    categoryModule = require('./category'),
     userModule = require('./user'),
     notifications = require('./notification'),
-    PMModule = require('./pm'),
     formatters = require('./format');
 
 /**
@@ -36,15 +34,17 @@ class Forum extends EventEmitter {
         super();
         this.Post = postModule.bindPost(this);
         this.Topic = topicModule.bindTopic(this);
-        this.Category = categoryModule.bindCategory(this);
         this.User = userModule.bindUser(this);
         this.Notification = notifications.bindNotification(this);
-        this.PrivateMessage = PMModule.bindPM(this);
+        this.PrivateMessage = this.Post;
         this.Format = formatters;
         
         this.config = config;
         
         this.IRC = require('irc');
+        
+        this._plugins = [];
+        this.activated = false;
     }
 
     /**
@@ -88,7 +88,11 @@ class Forum extends EventEmitter {
      * @type {User}
      */
     get user() {
-        throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+        return new Forum.User({
+            nick: this.username,
+            realname: this.username,
+            host: 'localhost'
+        });
     }
 
     /**
@@ -134,8 +138,12 @@ class Forum extends EventEmitter {
      */
     login() {
          //Allow users to set the nickserv nick
+        if (!this.activated) {
+            return Promise.resolve();
+        }
         const nickServ = this.config.core.nickServ || 'NickServ';
         this.client.say(nickServ, `IDENTIFY ${this.config.core.password}`);
+        return Promise.resolve();
     }
 
     /**
@@ -226,9 +234,21 @@ class Forum extends EventEmitter {
             floodProtectionDelay: 500,
         });
         
-        return this.Notification.activate().then(() => {
-            return Promise.all(this._plugins.map((plugin) => plugin.activate()));
+        this.client.addListener('error', (raw) => {
+            if (raw.command === 'err_notregistered') {
+                this.emit('log', `Greetings, traveller! We notice you have not registered the bot's nick, '${this.username}'. 
+                            Please do so; this prevents the bot from having nick collisions. Thank you.`);
+            }
+            debug('ERR: ' + raw.command);
         });
+        
+        this.activated = true;
+        
+        return this.login()
+            .then(() => this.Notification.activate())
+            .then(() => {
+                return Promise.all(this._plugins.map((plugin) => plugin.activate()));
+            });
     }
 
     /**
@@ -237,6 +257,7 @@ class Forum extends EventEmitter {
      * @returns {Promise} Resolves when all plugins have been disabled
      */
     deactivate() {
+        this.activated = false;
         throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
     }
     

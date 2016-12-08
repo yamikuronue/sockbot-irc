@@ -2,9 +2,11 @@
 /**
  * Example provider module Notification class
  * @module sockbot.providers.example.Notification
- * @author Accalia
+ * @author yamikuronue
  * @license MIT
  */
+ 
+const debug = require('debug')('sockbot:providers:irc:notifications');
 
 /**
  * Create a Notification class and bind it to a forum instance
@@ -33,6 +35,7 @@ exports.bindNotification = function bindNotification(forum) {
          * @param {*} payload Payload to construct the Notification object out of
          */
         constructor(payload) {
+            this.data = {};
             this.data.nick = payload.nick;
             this.data.to = payload.to;
             this.data.text = payload.text;
@@ -71,7 +74,7 @@ exports.bindNotification = function bindNotification(forum) {
          * @type {number}
          */
         get topicId() {
-            return 0;
+            return this.data.to;
         }
 
         /**
@@ -190,7 +193,7 @@ exports.bindNotification = function bindNotification(forum) {
          * @fulfill {Post} the Post the notification refers to
          */
         getPost() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return new forum.Post(this.data);
         }
 
         /**
@@ -218,7 +221,7 @@ exports.bindNotification = function bindNotification(forum) {
          * @fulfill {Post} the User who generated this notification
          */
         getUser() {
-            throw new Error('E_REQUIRED_FUNCTION_NOT_IMPLEMENTED');
+            return forum.User.getByName(this.data.nick);
         }
 
         /**
@@ -238,7 +241,7 @@ exports.bindNotification = function bindNotification(forum) {
         }
 
         /**
-         * Parse a notification from a message input
+         * Activates when a new message is received
          *
          * @public
          * @static
@@ -247,6 +250,7 @@ exports.bindNotification = function bindNotification(forum) {
          * @returns {Notification} the parsed notification
          */
         static receiveMessage(nick, to, text, message) {
+
             const notification = new Notification({
                 nick: nick,
                 to: to,
@@ -255,8 +259,33 @@ exports.bindNotification = function bindNotification(forum) {
                 type: 'message'
             });
             
+            debug(`emitting notification: message in ${notification.topicId} was ${nick}:${text}`);
             forum.emit(`notification:message`, notification);
             forum.emit('notification', notification);
+            
+            if (text.indexOf(forum.username) > -1) {
+                debug(`mention detected in "${text}"`);
+                forum.emit('notification:mention', notification);
+            }
+            
+            return Notification.processCommands(notification).then(() => Promise.resolve(notification));
+        }
+        
+        static processCommands(notification) {
+            const IDs = {
+                post: -1,
+                topic: notification.topicId,
+                user: notification.userId,
+                pm: -1,
+                chat: -1    
+            };
+            
+            debug(`processing commands`);
+            return forum.Commands.get(IDs,
+                    notification.text, 
+                    (content) => forum.Post.reply(notification.topicId, 0, content)
+                )
+                .then((command) => command.execute());
         }
 
         /**
@@ -289,7 +318,9 @@ exports.bindNotification = function bindNotification(forum) {
          * Listen for new notifications and process ones that arrive
          */
         static activate() {
+            debug(`notifications are active`);
             forum.client.addListener('message', Notification.receiveMessage);
+            return Promise.resolve();
         }
 
         /**
@@ -299,6 +330,7 @@ exports.bindNotification = function bindNotification(forum) {
          */
         static deactivate() {
             forum.client.removeListener('message', Notification.receiveMessage);
+            return Promise.resolve();
         }
     }
 
