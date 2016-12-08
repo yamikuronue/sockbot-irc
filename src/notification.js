@@ -282,10 +282,17 @@ exports.bindNotification = function bindNotification(forum) {
             
             debug(`processing commands`);
             return forum.Commands.get(IDs,
-                    notification.text, 
+                    notification.body, 
                     (content) => forum.Post.reply(notification.topicId, 0, content)
                 )
-                .then((command) => command.execute());
+                .then((command) => {
+                    debug(`Executing: ${command.commands.length} commands found`);
+                    return command.execute();
+                })
+                .catch((err) => {
+                    debug(`Error processing commands: ${err}`);
+                    throw new Error(err);
+                });
         }
 
         /**
