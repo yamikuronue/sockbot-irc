@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/yamikuronue/sockbot-irc.svg?branch=master)](https://travis-ci.org/yamikuronue/sockbot-irc)
+[![dependencies Status](https://david-dm.org/yamikuronue/SockBot-irc/master/status.svg)](https://david-dm.org/yamikuronue/SockBot-irc/master)
+[![devDependencies Status](https://david-dm.org/yamikuronue/SockBot-irc/master/dev-status.svg)](https://david-dm.org/yamikuronue/SockBot-irc/master?type=dev)
 
 # sockbot-IRC
 IRC Provider for SockBot
