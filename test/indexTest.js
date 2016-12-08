@@ -11,7 +11,7 @@ require('sinon-as-promised');
 chai.use(require('sinon-chai'));
 
 const Forum = require('../src/index');
-describe('providers/example/format', () => {
+describe('providers/irc', () => {
     it('should export a function()', () => {
         Forum.should.be.a('function');
     });
@@ -35,7 +35,6 @@ describe('providers/example/format', () => {
                 core: {}
             });
             sandbox.stub(forum.Notification, 'deactivate');
-            sandbox.stub(forum.PrivateMessage, 'deactivate');
         });
         afterEach(() => sandbox.restore());
         
